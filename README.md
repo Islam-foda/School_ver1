@@ -1,8 +1,9 @@
 # School-App
-School data collection
-## Groups
-* Classes
-* Students
-* Teachers
-  
-  * Others
+مدرستي ذكية مرقمنة
+## Sections
+* القائمة الرئيسية
+* شئون الطلاب
+* شئون العاملين
+* الجدول الدراسي
+* العهد والمخازن
+* التواصل والاعلام
