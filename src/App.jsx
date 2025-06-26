@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navigation from './assets/component/Navigation';
 import Header from './assets/component/Header';
 import DashboardContent from './assets/component/Dashboard';
-import {StudentsPage,CoursesPage,SchedulePage,ReportsPage,Contact ,SettingsPage} from './assets/component/Placeholder ';
+import { StudentsPage, CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
 
 const SchoolApp = () => {
   const [currentPage, setCurrentPage] = useState('dashboard');
@@ -30,17 +30,17 @@ const SchoolApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navigation 
+    <div className="min-h-screen bg-gray-50 ltr:text-left rtl:text-right">
+      <Navigation
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         isMobileMenuOpen={isMobileMenuOpen}
         setIsMobileMenuOpen={setIsMobileMenuOpen}
       />
-      
-      <div className="lg:ml-64">
+
+      <div className="ltr:lg:ml-64 rtl:lg:mr-64">
         <Header setIsMobileMenuOpen={setIsMobileMenuOpen} />
-        <main className="min-h-screen bg-gray-50">
+        <main className="min-h-screen bg-gray-50 p-4">
           {renderCurrentPage()}
         </main>
       </div>

@@ -14,8 +14,7 @@ const StudentsPage = () => (
       <Users className="w-16 h-16 text-blue-600 mx-auto mb-4" />
       <h2 className="text-2xl font-bold text-gray-900 mb-2">شئون الطلاب</h2>
       <p className="text-gray-600">
-        Student registration, profiles, and academic records will be managed
-        here.
+        إدارة تسجيل الطلاب والملفات الشخصية والسجلات الأكاديمية.
       </p>
     </div>
   </div>
@@ -27,7 +26,7 @@ const CoursesPage = () => (
       <BookOpen className="w-16 h-16 text-green-600 mx-auto mb-4" />
       <h2 className="text-2xl font-bold text-gray-900 mb-2">شئون العاملين</h2>
       <p className="text-gray-600">
-        Create, edit, and manage courses, curriculum, and learning materials.
+        إنشاء وتحرير وإدارة العاملين والمناهج ومواد التعلم.
       </p>
     </div>
   </div>
@@ -39,7 +38,7 @@ const SchedulePage = () => (
       <Calendar className="w-16 h-16 text-purple-600 mx-auto mb-4" />
       <h2 className="text-2xl font-bold text-gray-900 mb-2">الجدول الدراسي</h2>
       <p className="text-gray-600">
-        Plan and organize class schedules, events, and academic calendar.
+        تخطيط وتنظيم جداول الحصص والفعاليات والتقويم الأكاديمي.
       </p>
     </div>
   </div>
@@ -51,7 +50,7 @@ const ReportsPage = () => (
       <FileText className="w-16 h-16 text-orange-600 mx-auto mb-4" />
       <h2 className="text-2xl font-bold text-gray-900 mb-2">العهد والمخازن</h2>
       <p className="text-gray-600">
-        Generate comprehensive reports on attendance, grades, and performance.
+       إدارة العهد والمخازن والتقارير المالية.
       </p>
     </div>
   </div>
@@ -65,7 +64,7 @@ const Contact = () => (
         التواصل والاعلام
       </h2>
       <p className="text-gray-600">
-        Configure system preferences, user permissions, and school information.
+        إدارة التواصل مع أولياء الأمور والطلاب وتحديثات النظام.
       </p>
     </div>
   </div>
@@ -76,10 +75,10 @@ const SettingsPage = () => (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
       <Settings className="w-16 h-16 text-gray-600 mx-auto mb-4" />
       <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        Settings
+        الاعدادات
       </h2>
       <p className="text-gray-600">
-        Configure system preferences, user permissions, and school information.
+        إدارة تفضيلات النظام وأذونات المستخدم ومعلومات المدرسة.
       </p>
     </div>
   </div>

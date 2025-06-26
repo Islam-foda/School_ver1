@@ -10,27 +10,27 @@ const Navigation = ({ currentPage, setCurrentPage, isMobileMenuOpen, setIsMobile
     { id: 'schedule', label: 'الجدول المدرسي', icon: Calendar },
     { id: 'reports', label: 'العهد والمخازن', icon: FileText },
     { id: 'contact', label: 'التواصل والاعلام', icon: User },
-    { id: 'settings', label: 'Settings', icon: Settings }
+    { id: 'settings', label: 'الاعدادات', icon: Settings }
   ];
 
   return (
     <>
       {/* Mobile menu overlay */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" onClick={() => setIsMobileMenuOpen(false)} />
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden ltr:text-left rtl:text-right" onClick={() => setIsMobileMenuOpen(false)} />
       )}
       
       {/* Sidebar */}
-      <div className={`fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="p-6 border-b border-blue-700">
-          <div className="flex items-center justify-between">
+      <div className={`fixed right-0 top-0 h-full w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 ease-in-out z-50 lg:translate-x-0  ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full' }`}>
+        <div className="p-6 border-b border-blue-700 ">
+          <div className="flex items-center justify-between ">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
                 <BookOpen className="w-6 h-6 text-blue-900" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">SchoolHub</h1>
-                <p className="text-blue-200 text-sm">Management System</p>
+                <h1 className="text-xl font-bold">مدرستي ذكية</h1>
+                <p className="text-blue-200 text-sm">نظام إدارة المدارس</p>
               </div>
             </div>
             <button 
@@ -42,7 +42,7 @@ const Navigation = ({ currentPage, setCurrentPage, isMobileMenuOpen, setIsMobile
           </div>
         </div>
         
-        <nav className="mt-6">
+        <nav className="mt-6 ltr:ml-4 rtl:mr-4">
           {navItems.map((item) => {
             const Icon = item.icon;
             return (

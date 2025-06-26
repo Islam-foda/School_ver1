@@ -12,7 +12,7 @@ const Header = ({ setIsMobileMenuOpen }) => {
           >
             <Menu className="w-6 h-6" />
           </button>
-          <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
+          <h2 className="text-2xl font-bold text-gray-900">الصفحة الرئيسية</h2>
         </div>
         
         <div className="flex items-center space-x-4">
