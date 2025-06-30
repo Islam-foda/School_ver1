@@ -1,51 +1,58 @@
-import React, { useState } from 'react';
+
 import Navigation from './assets/component/Navigation';
+import { BrowserRouter as Router, Routes, Route,Link } from 'react-router-dom'
+import React, { useState } from 'react';
 import Header from './assets/component/Header';
+import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
+import Students from './assets/assistantComp/Students'
+import { GradeSection } from './assets/assistantComp/Students';
 import DashboardContent from './assets/component/Dashboard';
-import { StudentsPage, CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
 
-const SchoolApp = () => {
-  const [currentPage, setCurrentPage] = useState('dashboard');
+function SchoolApp() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const renderCurrentPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <DashboardContent />;
-      case 'students':
-        return <StudentsPage />;
-      case 'courses':
-        return <CoursesPage />;
-      case 'schedule':
-        return <SchedulePage />;
-      case 'reports':
-        return <ReportsPage />;
-      case 'contact':
-        return <Contact />;
-      case 'settings':
-        return <SettingsPage />;
-      default:
-        return <DashboardContent />;
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50 ltr:text-left rtl:text-right">
-      <Navigation
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        isMobileMenuOpen={isMobileMenuOpen}
-        setIsMobileMenuOpen={setIsMobileMenuOpen}
-      />
+    <Router>
 
+      <Navigation isMobileMenuOpen={isMobileMenuOpen} setIsMobileMenuOpen={setIsMobileMenuOpen} />
       <div className="ltr:lg:ml-64 rtl:lg:mr-64">
         <Header setIsMobileMenuOpen={setIsMobileMenuOpen} />
         <main className="min-h-screen bg-gray-50 p-4">
-          {renderCurrentPage()}
+          <Routes>
+            <Route path="/" element={<DashboardContent />} />
+            <Route path="/students" element={<Students />}>
+              <Route index element={
+                <div className="p-4 text-gray-500 text-center">
+                  اختر صفًا لعرض بياناته
+                </div>
+              } />
+              <Route path=":grade" element={<GradeSection />}>
+                <Route path=":studentId" element={<GradeSection />} />
+              </Route>
+            </Route>
+            <Route path="/staff" element={<CoursesPage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
+            <Route path="/inventory" element={<ReportsPage />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/settings" element={<SettingsPage />} />
+
+            {/* Optional: Redirect for unmatched paths */}
+            <Route path="*" element={
+              <div className="flex flex-col items-center justify-center h-screen">
+                <h1 className="text-4xl font-bold text-gray-700">404</h1>
+                <p className="text-lg text-gray-500">الصفحة غير موجودة</p>
+                <Link
+                  to="/"
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  العودة للصفحة الرئيسية
+                </Link>
+              </div>
+            } />
+          </Routes>
         </main>
       </div>
-    </div>
-  );
-};
+    </Router>
+  )
+}
 
-export default SchoolApp;
+export default SchoolApp

@@ -1,11 +1,14 @@
 import StatsCard from './StatsCard';
 import QuickActions from './QuickAction';
 import RecentActivity from './RecentActivity';
-import { Users, BookOpen, BarChart3, User } from 'lucide-react';
+import { Users, Landmark, BarChart3, User } from 'lucide-react';
+// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 const DashboardContent = () => {
+  // Simulate loading state
+  
   return (
-    <div className="p-6 space-y-6 ">
+     <div className="p-6 space-y-6 ">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white p-8 ltr:text-left rtl:text-right">
         <h1 className="text-3xl font-bold mb-2">مدرستي ذكية مرقمنة</h1>
@@ -19,28 +22,28 @@ const DashboardContent = () => {
           value="1,247"
           icon={Users}
           color="bg-blue-600"
-          trend="12"
+          timer="12"
         />
         <StatsCard
-          title="الدورات النشطة"
+          title="عدد الفصول"
           value="24"
-          icon={BookOpen}
+          icon={Landmark}
           color="bg-green-600"
-          trend="8"
+          timer="8"
         />
         <StatsCard
           title="المعلمين"
           value="56"
           icon={User}
           color="bg-purple-600"
-          trend="3"
+          timer="3"
         />
         <StatsCard
           title="معدل الحضور"
           value="94%"
           icon={BarChart3}
           color="bg-orange-600"
-          trend="2"
+          timer="2"
         />
       </div>
 
@@ -50,6 +53,7 @@ const DashboardContent = () => {
         <RecentActivity />
       </div>
     </div>
+  
   );
 };
 export default DashboardContent;

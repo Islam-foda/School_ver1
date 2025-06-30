@@ -1,10 +1,10 @@
-import React from 'react';
+
 import { Users, BookOpen, Calendar, FileText } from 'lucide-react';
 
 const QuickActions = () => {
   const actions = [
     { label: 'إضافة طالب جديد', icon: Users, color: 'bg-blue-600 hover:bg-blue-700' },
-    { label: 'إضافة دورة جديدة', icon: BookOpen, color: 'bg-green-600 hover:bg-green-700' },
+    { label: 'صفحة المعلم', icon: BookOpen, color: 'bg-green-600 hover:bg-green-700' },
     { label: 'الجدول الدراسي', icon: Calendar, color: 'bg-purple-600 hover:bg-purple-700' },
     { label: 'التقارير', icon: FileText, color: 'bg-orange-600 hover:bg-orange-700' }
   ];
