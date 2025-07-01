@@ -6,7 +6,7 @@ import Header from './assets/component/Header';
 import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
 import Students from './assets/assistantComp/Students'
 import { GradeSection } from './assets/assistantComp/Students';
-import Staff from './assets/assistantComp/staff';
+import Staff from './assets/assistantComp/Staff';
 import { StaffSection } from './assets/assistantComp/staff';
 import DashboardContent from './assets/component/Dashboard';
 
