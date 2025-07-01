@@ -7,7 +7,7 @@ import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from '.
 import Students from './assets/assistantComp/Students'
 import { GradeSection } from './assets/assistantComp/Students';
 import Staff from './assets/assistantComp/Staff';
-import { StaffSection } from './assets/assistantComp/staff';
+import { StaffSection } from './assets/assistantComp/Staff';
 import DashboardContent from './assets/component/Dashboard';
 
 function SchoolApp() {
