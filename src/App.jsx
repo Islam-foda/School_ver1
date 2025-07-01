@@ -1,11 +1,13 @@
 
 import Navigation from './assets/component/Navigation';
-import { BrowserRouter as Router, Routes, Route,Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import React, { useState } from 'react';
 import Header from './assets/component/Header';
 import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
 import Students from './assets/assistantComp/Students'
 import { GradeSection } from './assets/assistantComp/Students';
+import Staff from './assets/assistantComp/staff';
+import { StaffSection } from './assets/assistantComp/staff';
 import DashboardContent from './assets/component/Dashboard';
 
 function SchoolApp() {
@@ -29,7 +31,10 @@ function SchoolApp() {
                 <Route path=":studentId" element={<GradeSection />} />
               </Route>
             </Route>
-            <Route path="/staff" element={<CoursesPage />} />
+            <Route path="/staff" element={<Staff />}>
+              <Route index element={<StaffSection />} />
+              <Route path=":staffId" element={<StaffSection />} />
+            </Route>
             <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/inventory" element={<ReportsPage />} />
             <Route path="/contact" element={<Contact />} />
