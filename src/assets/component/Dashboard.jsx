@@ -2,7 +2,6 @@ import StatsCard from './StatsCard';
 import QuickActions from './QuickAction';
 import RecentActivity from './RecentActivity';
 import { Users, Landmark, BarChart3, User } from 'lucide-react';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 const DashboardContent = () => {
   // Simulate loading state

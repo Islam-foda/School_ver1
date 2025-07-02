@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../services/firebaseConfig';
+import { db } from '../../../../services/firebaseConfig';
 
-const ActivitiesForm = ({ grade }) => {
+const AttendanceForm = ({ grade }) => {
   const [formData, setFormData] = useState({
     name: '',
     birthDate: '',
@@ -14,7 +14,7 @@ const ActivitiesForm = ({ grade }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, `grade_${grade}_activities`), {
+      await addDoc(collection(db, `grade_${grade}_attendance`), {
         ...formData,
         createdAt: new Date()
       });
@@ -51,4 +51,4 @@ const ActivitiesForm = ({ grade }) => {
   );
 };
 
-export default ActivitiesForm
+export default AttendanceForm

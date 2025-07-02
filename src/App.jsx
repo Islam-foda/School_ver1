@@ -4,10 +4,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import React, { useState } from 'react';
 import Header from './assets/component/Header';
 import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
-import Students from './assets/assistantComp/Students'
-import { GradeSection } from './assets/assistantComp/Students';
-import Staff from './assets/assistantComp/staff';
-import { StaffSection } from './assets/assistantComp/staff';
+import Students, { GradeSection } from './assets/assistantComp/students/Students'
+import Staff, { StaffSection } from './assets/assistantComp/staff/Staff';
 import DashboardContent from './assets/component/Dashboard';
 
 function SchoolApp() {
@@ -33,7 +31,8 @@ function SchoolApp() {
             </Route>
             <Route path="/staff" element={<Staff />}>
               <Route index element={<StaffSection />} />
-              <Route path=":staffId" element={<StaffSection />} />
+              <Route path=":section" element={<StaffSection />} />
+              <Route path=":section/:staffId" element={<StaffSection />} />
             </Route>
             <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/inventory" element={<ReportsPage />} />

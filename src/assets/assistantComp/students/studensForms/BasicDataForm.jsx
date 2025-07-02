@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../services/firebaseConfig';
+import { db } from '../../../../services/firebaseConfig';
 
 const BasicDataForm = ({ gradeDB }) => {
   // grade: Arabic grade name (for display)

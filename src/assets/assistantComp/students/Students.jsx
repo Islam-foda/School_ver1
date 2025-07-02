@@ -1,25 +1,25 @@
 
-import {  useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Routes, Route, Link, Outlet, useNavigate } from 'react-router-dom';
-import BasicDataForm from './BasicDataForm'
-import ClassListsForm from './ClassListsForm'
-import YearWorkForm from './YearWorkForm'
-import AttendanceForm from './AttendanceForm'
-import ActivitiesForm from './ActivitiesForm'
-import PaymentsForm from './PaymentsForm'
-import PrintForms from './PrintForms'
+import BasicDataForm from './studensForms/BasicDataForm'
+import ClassListsForm from './studensForms/ClassListsForm'
+import YearWorkForm from './studensForms/YearWorkForm'
+import AttendanceForm from './studensForms/AttendanceForm'
+import ActivitiesForm from './studensForms/ActivitiesForm'
+import PaymentsForm from './studensForms/PaymentsForm'
+import PrintForms from './studensForms/PrintForms'
 import StudentList from './StudentList';
-import {  collection, query, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../services/firebaseConfig';
-import { 
-  User, 
-  Users, 
-  FileText, 
-  Calendar, 
-  Activity, 
-  CreditCard, 
-  Printer, 
-  BarChart3 
+import { collection, query, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../../services/firebaseConfig';
+import {
+  User,
+  Users,
+  FileText,
+  Calendar,
+  Activity,
+  CreditCard,
+  Printer,
+  BarChart3
 } from 'lucide-react';
 
 
@@ -27,8 +27,8 @@ import {
 
 
 const Students = () => {
- const grades = ['الأول', 'الثاني', 'الثالث']; // Add more grades if needed
-const gradeMapping = {
+  const grades = ['الأول', 'الثاني', 'الثالث']; // Add more grades if needed
+  const gradeMapping = {
     'الأول': 'first',
     'الثاني': 'second',
     'الثالث': 'third'
@@ -38,11 +38,11 @@ const gradeMapping = {
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-2xl font-bold text-gray-800">شئون الطلاب</h1>
-      
+
       {/* Grade Navigation */}
       <div className="flex space-x-4 mb-6">
         {grades.map(grade => (
-          <Link 
+          <Link
             key={grade}
             to={`/students/${gradeMapping[grade]}`}
             className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200"
@@ -51,17 +51,17 @@ const gradeMapping = {
           </Link>
         ))}
       </div>
-      
+
       {/* Grade Content Area */}
       <div className="bg-white rounded-lg shadow-md p-4">
-        <Outlet /> 
+        <Outlet />
       </div>
     </div>
   );
 };
 
 const GradeSection = () => {
-  const {grade,studentId} = useParams()
+  const { grade, studentId } = useParams()
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(studentId ? 'basic' : 'list');
   const [students, setStudents] = useState([]);
@@ -83,7 +83,7 @@ const GradeSection = () => {
     // Add more mappings if needed
   };
 
-useEffect(() => {
+  useEffect(() => {
     const fetchStudents = async () => {
       setLoading(true);
       try {
@@ -101,14 +101,21 @@ useEffect(() => {
         setLoading(false);
       }
     };
-    
+
     fetchStudents();
   }, [grade]);
 
- const menuItems = [
+ 
+
+  const menuItems = [
     {
       key: 'basic',
       title: 'البيانات الأساسية',
+      icon: User,
+      color: 'bg-blue-100 text-blue-600 hover:bg-blue-200'
+    }, {
+      key: 'list',
+      title:'قوائم الطلاب',
       icon: User,
       color: 'bg-blue-100 text-blue-600 hover:bg-blue-200'
     },
@@ -161,25 +168,25 @@ useEffect(() => {
     setShowIconMenu(false);
   };
 
-const handleDeleteStudent = async (studentId) => {
-  try {
-    // Delete the student document from Firestore
-    await deleteDoc(doc(db, `grade_${grade}_students`, studentId));
-    
-    // Update the local state to remove the deleted student
-    setStudents(prevStudents => 
-      prevStudents.filter(student => student.id !== studentId)
-    );
-    
-    console.log('Student deleted successfully');
-    // You might want to show a success message to the user
-    
-  } catch (error) {
-    console.error('Error deleting student:', error);
-    // You might want to show an error message to the user
-    throw error; // Re-throw to let the StudentList component handle the error state
-  }
-};
+  const handleDeleteStudent = async (studentId) => {
+    try {
+      // Delete the student document from Firestore
+      await deleteDoc(doc(db, `grade_${grade}_students`, studentId));
+
+      // Update the local state to remove the deleted student
+      setStudents(prevStudents =>
+        prevStudents.filter(student => student.id !== studentId)
+      );
+
+      console.log('Student deleted successfully');
+      // You might want to show a success message to the user
+
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      // You might want to show an error message to the user
+      throw error; // Re-throw to let the StudentList component handle the error state
+    }
+  };
 
   const handleBackToMenu = () => {
     setActiveTab(null);
@@ -217,7 +224,7 @@ const handleDeleteStudent = async (studentId) => {
           </button>
         )}
       </div>
-      
+
       {showIconMenu ? (
         // Icon Menu View
         <div className="p-6">
@@ -249,15 +256,14 @@ const handleDeleteStudent = async (studentId) => {
               <button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`px-4 py-2 mx-1 rounded-t-lg whitespace-nowrap ${
-                  activeTab === key ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
-                }`}
+                className={`px-4 py-2 mx-1 rounded-t-lg whitespace-nowrap ${activeTab === key ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
+                  }`}
               >
                 {getFormName(key)}
               </button>
             ))}
           </div>
-          
+
           <div className="border rounded-lg p-4">
             {forms[activeTab]}
           </div>
