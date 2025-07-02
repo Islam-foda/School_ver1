@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import React, { useState } from 'react';
 import Header from './assets/component/Header';
 import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
-import Students, { GradeSection } from './assets/assistantComp/students/Students'
+import Students, { GradeSection } from './assets/assistantComp/students/Students';
 import Staff, { StaffSection } from './assets/assistantComp/staff/Staff';
 import DashboardContent from './assets/component/Dashboard';
 
