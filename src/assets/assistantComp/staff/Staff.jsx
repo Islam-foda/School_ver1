@@ -45,9 +45,8 @@ const StaffSection = () => {
   // Updated field mapping for both Arabic and English
   const dbFieldMapping = {
     // English to Arabic mapping
-    'studentId': 'رقم_الطالب', 
     'name': 'الاسم',
-    'staffId': 'رقم_الموظف',
+    'staffId': 'رقم المدرس',
     'nationalId': 'الرقم_القومي',
     'position': 'الوظيفة',
     'department': 'القسم',

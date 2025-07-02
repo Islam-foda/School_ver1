@@ -1,5 +1,5 @@
 import { db } from '../../../../services/firebaseConfig'; 
-
+ import { User, Briefcase, Save, Phone } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
@@ -81,13 +81,13 @@ const StaffBasicDataForm = ({ staffId: propStaffId }) => {
     try {
       // Validate required fields
       if (!formData.staffId.trim()) {
-        alert('رقم الموظف مطلوب');
+        alert('كود المعلم مطلوب');
         setSaving(false);
         return;
       }
 
       if (!formData.name.trim()) {
-        alert('اسم الموظف مطلوب');
+        alert('اسم المعلم مطلوب');
         setSaving(false);
         return;
       }
@@ -105,13 +105,13 @@ const StaffBasicDataForm = ({ staffId: propStaffId }) => {
         // Update existing staff member
         await updateDoc(doc(db, 'staff', staffId), staffData);
         console.log('Staff data updated successfully');
-        alert('تم تحديث بيانات الموظف بنجاح');
+        alert('تم تحديث بيانات المعلم بنجاح');
       } else {
         // Create new staff member using staffId as document ID
         // Check if staff ID already exists
         const existingDoc = await getDoc(doc(db, 'staff', formData.staffId));
         if (existingDoc.exists()) {
-          alert('رقم الموظف موجود بالفعل، يرجى استخدام رقم آخر');
+          alert('كود المعلم موجود بالفعل، يرجى استخدام كود آخر');
           setSaving(false);
           return;
         }
@@ -121,7 +121,7 @@ const StaffBasicDataForm = ({ staffId: propStaffId }) => {
           createdAt: new Date().toISOString()
         });
         console.log('New staff member created successfully');
-        alert('تم إضافة الموظف الجديد بنجاح');
+        alert('تم إضافة المعلم الجديد بنجاح');
         
         // Clear form after successful creation
         setFormData({
@@ -162,11 +162,11 @@ const StaffBasicDataForm = ({ staffId: propStaffId }) => {
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-gray-800">
-          {staffId ? 'تعديل بيانات الموظف' : 'إضافة موظف جديد'}
+          {staffId ? 'تعديل بيانات المعلم' : 'إضافة معلم جديد'}
         </h3>
         {staffId && (
           <div className="text-sm text-gray-600">
-            معرف الموظف: <span className="font-mono font-medium">{staffId}</span>
+            كود المعلم: <span className="font-mono font-medium">{staffId}</span>
           </div>
         )}
       </div>
@@ -181,7 +181,7 @@ const StaffBasicDataForm = ({ staffId: propStaffId }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                رقم الموظف *
+                كود المعلم *
               </label>
               <input
                 type="text"
@@ -189,13 +189,13 @@ const StaffBasicDataForm = ({ staffId: propStaffId }) => {
                 value={formData.staffId}
                 onChange={handleInputChange}
                 disabled={!!staffId} // Disable if editing existing staff
-                placeholder="أدخل رقم الموظف"
+                placeholder="أدخل كود المعلم"
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                 required
               />
               {staffId && (
                 <p className="text-xs text-gray-500 mt-1">
-                  لا يمكن تعديل رقم الموظف بعد الإنشاء
+                  لا يمكن تعديل كود المعلم بعد الإنشاء
                 </p>
               )}
             </div>
