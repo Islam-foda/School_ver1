@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 // import { User, Briefcase, Phone, Save } from 'lucide-react';
 
-const StaffBasicDataForm = ({ staffId: propStaffId }) => {
+const StaffBasicDataForm = ({ staffId: propStaffId,onRefresh }) => {
   // Get staffId from props first, then from URL params as fallback
   const { staffId: urlStaffId } = useParams();
   const staffId = propStaffId || urlStaffId;
@@ -77,6 +77,7 @@ const StaffBasicDataForm = ({ staffId: propStaffId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
+    onRefresh();
 
     try {
       // Validate required fields

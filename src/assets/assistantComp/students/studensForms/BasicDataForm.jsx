@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../../../services/firebaseConfig';
 
-const BasicDataForm = ({ gradeDB }) => {
+const BasicDataForm = ({ gradeDB, onRefresh }) => {
   // grade: Arabic grade name (for display)
   // gradeDB: English grade name (for database operations)
   const navigate = useNavigate();
@@ -136,12 +136,12 @@ const BasicDataForm = ({ gradeDB }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!validateForm()) {
       return;
     }
-
+    
     setIsLoading(true);
+    onRefresh();
 
     try {
       if (isEditMode) {

@@ -67,6 +67,7 @@ const GradeSection = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showIconMenu, setShowIconMenu] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     if (studentId) {
@@ -103,9 +104,11 @@ const GradeSection = () => {
     };
 
     fetchStudents();
-  }, [grade]);
+  }, [grade, refreshTrigger]);
 
- 
+  const triggerRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   const menuItems = [
     {
@@ -115,7 +118,7 @@ const GradeSection = () => {
       color: 'bg-blue-100 text-blue-600 hover:bg-blue-200'
     }, {
       key: 'list',
-      title:'قوائم الطلاب',
+      title: 'قوائم الطلاب',
       icon: User,
       color: 'bg-blue-100 text-blue-600 hover:bg-blue-200'
     },
@@ -166,13 +169,14 @@ const GradeSection = () => {
   const handleMenuItemClick = (key) => {
     setActiveTab(key);
     setShowIconMenu(false);
+    triggerRefresh();
   };
 
   const handleDeleteStudent = async (studentId) => {
     try {
       // Delete the student document from Firestore
       await deleteDoc(doc(db, `grade_${grade}_students`, studentId));
-
+      triggerRefresh()
       // Update the local state to remove the deleted student
       setStudents(prevStudents =>
         prevStudents.filter(student => student.id !== studentId)
@@ -191,6 +195,7 @@ const GradeSection = () => {
   const handleBackToMenu = () => {
     setActiveTab(null);
     setShowIconMenu(true);
+    triggerRefresh()
   };
 
   const getFormName = (key) => {
@@ -199,7 +204,7 @@ const GradeSection = () => {
   };
 
   const forms = {
-    basic: <BasicDataForm grade={arabicGradeNames[grade]} gradeDB={grade} />,
+    basic: <BasicDataForm grade={arabicGradeNames[grade]} gradeDB={grade} onRefresh={triggerRefresh} />,
     list: <StudentList students={students} gradeDB={grade} loading={loading} onEditStudent={(id) => navigate(`/students/${grade}/${id}`)} onDeleteStudent={handleDeleteStudent} />,
     // Add other forms as needed
     classes: <div className="p-4 text-center text-gray-500">قوائم الفصول - قيد التطوير</div>,
