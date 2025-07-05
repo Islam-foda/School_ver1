@@ -42,20 +42,20 @@ const StaffBasicDataForm = ({ staffId: propStaffId,onRefresh }) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         // Handle both old structure (with basicData) and new flat structure
-        const staffData = data.basicData ? data.basicData : data;
+    
         setFormData({
-          staffId: staffData.staffId || staffId,
-          name: staffData.name || '',
-          nationalId: staffData.nationalId || '',
-          phone: staffData.phone || '',
-          email: staffData.email || '',
-          address: staffData.address || '',
-          position: staffData.position || '',
-          department: staffData.department || '',
-          hireDate: staffData.hireDate || '',
-          salary: staffData.salary || '',
-          emergencyContact: staffData.emergencyContact || '',
-          emergencyPhone: staffData.emergencyPhone || ''
+          staffId: data.staffId || staffId,
+          name: data.name || '',
+          nationalId: data.nationalId || '',
+          phone: data.phone || '',
+          email: data.email || '',
+          address: data.address || '',
+          position: data.position || '',
+          department: data.department || '',
+          hireDate: data.hireDate || '',
+          salary: data.salary || '',
+          emergencyContact: data.emergencyContact || '',
+          emergencyPhone: data.emergencyPhone || ''
         });
       }
     } catch (error) {
@@ -97,8 +97,6 @@ const StaffBasicDataForm = ({ staffId: propStaffId,onRefresh }) => {
       const staffData = {
         // Store in flat structure for easier access
         ...formData,
-        // Also maintain basicData for backward compatibility
-        basicData: formData,
         updatedAt: new Date().toISOString()
       };
 
