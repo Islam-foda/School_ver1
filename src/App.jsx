@@ -4,9 +4,12 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import React, { useState } from 'react';
 import Header from './assets/component/Header';
 import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
-import Students, { GradeSection } from './assets/assistantComp/students/Students';
+import Students, { GradeSection } from './assets/assistantComp/students/Students'
+import StudentList from './assets/assistantComp/students/TempStudent';
+import BasicDataForm from './assets/assistantComp/students/StudentForm';
 import Staff, { StaffSection } from './assets/assistantComp/staff/Staff';
 import DashboardContent from './assets/component/Dashboard';
+
 
 function SchoolApp() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -19,15 +22,9 @@ function SchoolApp() {
         <main className="min-h-screen bg-gray-50 p-4">
           <Routes>
             <Route path="/" element={<DashboardContent />} />
-            <Route path="/students" element={<Students />}>
-              <Route index element={
-                <div className="p-4 text-gray-500 text-center">
-                  اختر صفًا لعرض بياناته
-                </div>
-              } />
-              <Route path=":grade" element={<GradeSection />}>
-                <Route path=":studentId" element={<GradeSection />} />
-              </Route>
+           
+            <Route path="/students" element={<GradeSection />}>
+              
             </Route>
             <Route path="/staff" element={<Staff />}>
               <Route index element={<StaffSection />} />

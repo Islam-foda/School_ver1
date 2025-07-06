@@ -1,6 +1,8 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, Routes, Route, Link, Outlet, useNavigate } from 'react-router-dom';
+import { useParams, Routes, Route, Link, Outlet } from 'react-router-dom';
+import { collection, query, getDocs, where, arrayUnion, writeBatch } from 'firebase/firestore';
+import { db } from '../../../services/firebaseConfig';
 import BasicDataForm from './studensForms/BasicDataForm'
 import ClassListsForm from './studensForms/ClassListsForm'
 import YearWorkForm from './studensForms/YearWorkForm'
@@ -8,9 +10,8 @@ import AttendanceForm from './studensForms/AttendanceForm'
 import ActivitiesForm from './studensForms/ActivitiesForm'
 import PaymentsForm from './studensForms/PaymentsForm'
 import PrintForms from './studensForms/PrintForms'
-import StudentList from './StudentList';
-import { collection, query, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../../services/firebaseConfig';
+// import StudentList from './StudentList';
+import StudentList from './TempStudent'
 import {
   User,
   Users,
@@ -19,7 +20,7 @@ import {
   Activity,
   CreditCard,
   Printer,
-  BarChart3
+  BarChart3, ArrowUp
 } from 'lucide-react';
 
 
@@ -62,12 +63,9 @@ const Students = () => {
 
 const GradeSection = () => {
   const { grade, studentId } = useParams()
-  const navigate = useNavigate();
+  
   const [activeTab, setActiveTab] = useState(studentId ? 'basic' : 'list');
-  const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [showIconMenu, setShowIconMenu] = useState(true);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     if (studentId) {
@@ -84,32 +82,66 @@ const GradeSection = () => {
     // Add more mappings if needed
   };
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      setLoading(true);
-      try {
-        const q = query(collection(db, `grade_${grade}_students`));
-        const querySnapshot = await getDocs(q);
-        const studentsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          ...(doc.data().basicData || {})
-        }));
-        setStudents(studentsData);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
 
-    fetchStudents();
-  }, [grade, refreshTrigger]);
 
-  const triggerRefresh = () => {
-    setRefreshTrigger(prev => prev + 1);
+ 
+  const handleMenuItemClick = (key) => {
+    setActiveTab(key);
+    setShowIconMenu(false);
+
   };
 
+  
+
+  const handleBackToMenu = () => {
+    setActiveTab(null);
+    setShowIconMenu(true);
+  };
+
+  const getFormName = (key) => {
+    const item = menuItems.find(item => item.key === key);
+    return item ? item.title : key;
+  };
+
+
+// test promoting function
+  const handlePromoteStudents = async () => {
+    try {
+      // Get all active students in current grade
+      const q = query(
+        collection(db, 'students'),
+        where('currentGrade', '==', grade),
+        where('isActive', '==', true)
+      );
+      const querySnapshot = await getDocs(q);
+
+      // Determine next grade
+      const nextGrade = {
+        'first': 'second',
+        'second': 'third',
+        'third': 'graduate' // or whatever you want for graduates
+      }[grade];
+
+      // Batch update all students to next grade
+      const batch = writeBatch(db);
+      querySnapshot.forEach(doc => {
+        const studentRef = doc.ref;
+        batch.update(studentRef, {
+          currentGrade: nextGrade,
+          previousGrades: arrayUnion(grade) // Track grade history
+        });
+      });
+
+      await batch.commit();
+      alert(`تم ترقية الطلاب بنجاح إلى الصف ${arabicGradeNames[nextGrade] || 'التخرج'}`);
+    } catch (error) {
+      console.error('Error promoting students:', error);
+      alert('حدث خطأ أثناء محاولة ترقية الطلاب');
+    }
+  };
+  // end promotion function 
+  
+  
   const menuItems = [
     {
       key: 'basic',
@@ -163,49 +195,17 @@ const GradeSection = () => {
       title: 'احصائية الصف',
       icon: BarChart3,
       color: 'bg-teal-100 text-teal-600 hover:bg-teal-200'
+    }, {
+      key: 'promote',
+      title: 'ترقية الطلاب',
+      icon: ArrowUp, // You'll need to import this icon
+      color: 'bg-green-100 text-green-600 hover:bg-green-200',
+      onClick: handlePromoteStudents
     }
   ];
 
-  const handleMenuItemClick = (key) => {
-    setActiveTab(key);
-    setShowIconMenu(false);
-    triggerRefresh();
-  };
-
-  const handleDeleteStudent = async (studentId) => {
-    try {
-      // Delete the student document from Firestore
-      await deleteDoc(doc(db, `grade_${grade}_students`, studentId));
-      triggerRefresh()
-      // Update the local state to remove the deleted student
-      setStudents(prevStudents =>
-        prevStudents.filter(student => student.id !== studentId)
-      );
-
-      console.log('Student deleted successfully');
-      // You might want to show a success message to the user
-
-    } catch (error) {
-      console.error('Error deleting student:', error);
-      // You might want to show an error message to the user
-      throw error; // Re-throw to let the StudentList component handle the error state
-    }
-  };
-
-  const handleBackToMenu = () => {
-    setActiveTab(null);
-    setShowIconMenu(true);
-    triggerRefresh()
-  };
-
-  const getFormName = (key) => {
-    const item = menuItems.find(item => item.key === key);
-    return item ? item.title : key;
-  };
-
   const forms = {
-    basic: <BasicDataForm grade={arabicGradeNames[grade]} gradeDB={grade} onRefresh={triggerRefresh} />,
-    list: <StudentList students={students} gradeDB={grade} loading={loading} onEditStudent={(id) => navigate(`/students/${grade}/${id}`)} onDeleteStudent={handleDeleteStudent} />,
+    basic: <StudentList  />,
     // Add other forms as needed
     classes: <div className="p-4 text-center text-gray-500">قوائم الفصول - قيد التطوير</div>,
     yearWork: <div className="p-4 text-center text-gray-500">كشوف أعمال السنة - قيد التطوير</div>,
