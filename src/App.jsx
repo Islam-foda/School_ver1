@@ -1,18 +1,38 @@
 
 import Navigation from './assets/component/Navigation';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom'
+import { useState } from 'react';
+import { db } from './services/firebaseConfig';
+import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import Header from './assets/component/Header';
 import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
-import Students, { GradeSection } from './assets/assistantComp/students/Students'
-import StudentList from './assets/assistantComp/students/TempStudent';
+import GradeSection from './assets/assistantComp/students/Students'
+import StudentList from './assets/assistantComp/students/studensForms/TempStudent';
 import BasicDataForm from './assets/assistantComp/students/StudentForm';
 import Staff, { StaffSection } from './assets/assistantComp/staff/Staff';
 import DashboardContent from './assets/component/Dashboard';
+import AddOrEditStudent from './assets/assistantComp/students/studensForms/AddOrEditStudent';
+// import { useNavigate } from 'react-router-dom';
 
 
 function SchoolApp() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
+
+
+  const handleSave = async (studentData) => {
+    if (studentData.id) {
+      const ref = doc(db, "students", studentData.id);
+      const {  ...rest  } = studentData;
+      await updateDoc(ref, rest);
+    } else {
+      await addDoc(collection(db, "students"), studentData);
+    }
+    setEditingStudent(null);
+    // Fixed navigation - use navigate instead of window.location
+    window.location.href = "/students/list";
+  }
+
   return (
     <Router>
 
@@ -22,9 +42,23 @@ function SchoolApp() {
         <main className="min-h-screen bg-gray-50 p-4">
           <Routes>
             <Route path="/" element={<DashboardContent />} />
-           
             <Route path="/students" element={<GradeSection />}>
-              
+              {/* <Route index element={<Navigate to="" />} /> */}
+              <Route
+                path="list"
+                element={<StudentList onEdit={setEditingStudent} />}
+              />
+             
+              <Route
+                path="edit"
+                element={
+                  <AddOrEditStudent
+                    existingData={editingStudent}
+                    onSave={handleSave}
+                    onCancel={() => window.history.back()}
+                  />
+                }
+              />
             </Route>
             <Route path="/staff" element={<Staff />}>
               <Route index element={<StaffSection />} />

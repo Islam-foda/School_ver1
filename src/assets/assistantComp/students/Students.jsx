@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Routes, Route, Link, Outlet } from 'react-router-dom';
-import { collection, query, getDocs, where, arrayUnion, writeBatch } from 'firebase/firestore';
+import { collection, query, getDocs, where, arrayUnion, writeBatch, doc, updateDoc, addDoc,serverTimestamp   } from 'firebase/firestore';
 import { db } from '../../../services/firebaseConfig';
 import BasicDataForm from './studensForms/BasicDataForm'
 import ClassListsForm from './studensForms/ClassListsForm'
@@ -11,7 +11,7 @@ import ActivitiesForm from './studensForms/ActivitiesForm'
 import PaymentsForm from './studensForms/PaymentsForm'
 import PrintForms from './studensForms/PrintForms'
 // import StudentList from './StudentList';
-import StudentList from './TempStudent'
+import AddOrEditStudent from './studensForms/AddOrEditStudent';
 import {
   User,
   Users,
@@ -22,50 +22,19 @@ import {
   Printer,
   BarChart3, ArrowUp
 } from 'lucide-react';
+import ListStudents from './studensForms/TempStudent';
+
+// import { useNavigate } from 'react-router-dom';
 
 
 
 
-
-const Students = () => {
-  const grades = ['الأول', 'الثاني', 'الثالث']; // Add more grades if needed
-  const gradeMapping = {
-    'الأول': 'first',
-    'الثاني': 'second',
-    'الثالث': 'third'
-    // Add more mappings if needed
-  };
-
-  return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800">شئون الطلاب</h1>
-
-      {/* Grade Navigation */}
-      <div className="flex space-x-4 mb-6">
-        {grades.map(grade => (
-          <Link
-            key={grade}
-            to={`/students/${gradeMapping[grade]}`}
-            className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200"
-          >
-            الصف {grade}
-          </Link>
-        ))}
-      </div>
-
-      {/* Grade Content Area */}
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <Outlet />
-      </div>
-    </div>
-  );
-};
 
 const GradeSection = () => {
   const { grade, studentId } = useParams()
-  
   const [activeTab, setActiveTab] = useState(studentId ? 'basic' : 'list');
   const [showIconMenu, setShowIconMenu] = useState(true);
+  const [editingStudent, setEditingStudent] = useState(null);
 
   useEffect(() => {
     if (studentId) {
@@ -74,28 +43,77 @@ const GradeSection = () => {
     }
   }, [studentId]);
 
-
   const arabicGradeNames = {
     'first': 'الأول',
     'second': 'الثاني',
     'third': 'الثالث'
-    // Add more mappings if needed
   };
 
-
-
- 
   const handleMenuItemClick = (key) => {
     setActiveTab(key);
     setShowIconMenu(false);
-
   };
 
-  
+  // FIXED: Handle edit without navigation
+  const handleEdit = (student) => {
+    setEditingStudent(student);
+    setActiveTab('basic'); // Switch to basic tab (add/edit form)
+    setShowIconMenu(false); // Show the form view
+  };
 
-  const handleBackToMenu = () => {
-    setActiveTab(null);
-    setShowIconMenu(true);
+  // FIXED: Handle add new student
+  const handleAddNew = () => {
+    setEditingStudent(null); // Clear editing student for new student
+    setActiveTab('basic'); // Switch to basic tab
+    setShowIconMenu(false); // Show the form view
+  };
+
+  const handleSave = async (data) => {
+   const now = new Date();
+  const readableDate = now.toLocaleString('en-US');
+  const arabicDate = now.toLocaleDateString('ar-EG');
+  
+  try {
+    if (data.id) {
+      // EDITING existing student
+      const ref = doc(db, "students", data.id);
+      const { id, ...rest } = data;
+      
+      const updatedData = {
+        ...rest,
+        updatedDate: serverTimestamp(), // Firestore server timestamp
+        updatedDateReadable: readableDate,
+        updatedDateArabic: arabicDate,
+      };
+      
+      await updateDoc(ref, updatedData);
+      
+    } else {
+      // ADDING new student
+      const newStudentData = {
+        ...data,
+        createdDate: serverTimestamp(), // Firestore server timestamp
+        createdDateReadable: readableDate,
+        createdDateArabic: arabicDate,
+        updatedDate: serverTimestamp(),
+        updatedDateReadable: readableDate,
+        updatedDateArabic: arabicDate,
+      };
+      
+      await addDoc(collection(db, "students"), newStudentData);
+    }
+    setEditingStudent(null);
+    setActiveTab('list'); // Go back to student list
+    // No navigation needed - stay in GradeSection
+  }catch (error) {
+    console.error('Error saving student:', error);
+    alert('حدث خطأ أثناء حفظ بيانات الطالب');
+  }
+};
+
+  const handleCancel = () => {
+    setEditingStudent(null);
+    setActiveTab('list'); // Go back to student list
   };
 
   const getFormName = (key) => {
@@ -103,11 +121,8 @@ const GradeSection = () => {
     return item ? item.title : key;
   };
 
-
-// test promoting function
   const handlePromoteStudents = async () => {
     try {
-      // Get all active students in current grade
       const q = query(
         collection(db, 'students'),
         where('currentGrade', '==', grade),
@@ -115,20 +130,18 @@ const GradeSection = () => {
       );
       const querySnapshot = await getDocs(q);
 
-      // Determine next grade
       const nextGrade = {
         'first': 'second',
         'second': 'third',
-        'third': 'graduate' // or whatever you want for graduates
+        'third': 'graduate'
       }[grade];
 
-      // Batch update all students to next grade
       const batch = writeBatch(db);
       querySnapshot.forEach(doc => {
         const studentRef = doc.ref;
         batch.update(studentRef, {
           currentGrade: nextGrade,
-          previousGrades: arrayUnion(grade) // Track grade history
+          previousGrades: arrayUnion(grade)
         });
       });
 
@@ -139,9 +152,7 @@ const GradeSection = () => {
       alert('حدث خطأ أثناء محاولة ترقية الطلاب');
     }
   };
-  // end promotion function 
-  
-  
+
   const menuItems = [
     {
       key: 'basic',
@@ -198,15 +209,19 @@ const GradeSection = () => {
     }, {
       key: 'promote',
       title: 'ترقية الطلاب',
-      icon: ArrowUp, // You'll need to import this icon
+      icon: ArrowUp,
       color: 'bg-green-100 text-green-600 hover:bg-green-200',
       onClick: handlePromoteStudents
     }
   ];
 
   const forms = {
-    basic: <StudentList  />,
-    // Add other forms as needed
+    basic: <AddOrEditStudent
+      existingData={editingStudent}
+      onSave={handleSave}
+      onCancel={handleCancel}
+    />,
+    list: <ListStudents onEdit={handleEdit} onAddNew={handleAddNew} />,
     classes: <div className="p-4 text-center text-gray-500">قوائم الفصول - قيد التطوير</div>,
     yearWork: <div className="p-4 text-center text-gray-500">كشوف أعمال السنة - قيد التطوير</div>,
     attendance: <div className="p-4 text-center text-gray-500">كشوف الغياب - قيد التطوير</div>,
@@ -218,22 +233,11 @@ const GradeSection = () => {
 
   return (
     <div>
-      <div className="bg-blue-600 p-4 text-white mb-4 flex justify-between items-center">
-        <h2 className="text-xl font-semibold">سجل قيد الصف {arabicGradeNames[grade]}</h2>
-        {!showIconMenu && (
-          <button
-            onClick={handleBackToMenu}
-            className="bg-blue-500 hover:bg-blue-400 px-3 py-1 rounded text-sm"
-          >
-            العودة للقائمة الرئيسية
-          </button>
-        )}
-      </div>
-
       {showIconMenu ? (
         // Icon Menu View
         <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <Outlet />
             {menuItems.map((item) => {
               const IconComponent = item.icon;
               return (
@@ -280,5 +284,4 @@ const GradeSection = () => {
 
 
 
-export default Students;
-export { GradeSection };
+export default GradeSection;
