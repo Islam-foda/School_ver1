@@ -44,7 +44,7 @@ const AddOrEditStudent = ({existingData ,onCancel,onSave}) => {
 
     onSave(student);
     
-     navigate("/");
+     navigate('/students');
   };
 
   return (

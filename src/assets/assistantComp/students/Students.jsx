@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { useParams, Routes, Route, Link, Outlet } from 'react-router-dom';
+import { useParams, Routes, useNavigate, Link, Outlet } from 'react-router-dom';
 import { collection, query, getDocs, where, arrayUnion, writeBatch, doc, updateDoc, addDoc,serverTimestamp   } from 'firebase/firestore';
 import { db } from '../../../services/firebaseConfig';
 import BasicDataForm from './studensForms/BasicDataForm'
@@ -31,6 +31,7 @@ import ListStudents from './studensForms/TempStudent';
 
 
 const GradeSection = () => {
+   const navigate = useNavigate();
   const { grade, studentId } = useParams()
   const [activeTab, setActiveTab] = useState(studentId ? 'basic' : 'list');
   const [showIconMenu, setShowIconMenu] = useState(true);
@@ -231,8 +232,27 @@ const GradeSection = () => {
     statistics: <div className="p-4 text-center text-gray-500">احصائية الصف - قيد التطوير</div>
   };
 
+ const handleBackToMenu = () => {
+    setActiveTab(null);
+    setShowIconMenu(true);
+    navigate('/students');
+  };
+
   return (
     <div>
+      <div className="bg-green-600 p-4 text-white mb-4 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-semibold">إدارة شئون الطلاب</h2>
+        </div>
+       {!showIconMenu && (
+          <button
+            onClick={handleBackToMenu}
+            className="bg-green-500 hover:bg-green-400 px-3 py-1 rounded text-sm"
+          >
+            العودة للقائمة الرئيسية
+          </button>
+                  )}
+                  </div>
       {showIconMenu ? (
         // Icon Menu View
         <div className="p-6">
