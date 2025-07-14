@@ -78,7 +78,7 @@ const GradeSection = () => {
     if (data.id) {
       // EDITING existing student
       const ref = doc(db, "students", data.id);
-      const { id, ...rest } = data;
+      const { id: _id, ...rest } = data;
       
       const updatedData = {
         ...rest,

@@ -34,6 +34,7 @@ const ListStudents = ({ onEdit,onAddNew  }) => {
         ...doc.data(),
       }));
       setStudents(result);
+       {console.log(result.length)}
     } catch (err) {
       console.error("Error loading students:", err);
     } finally {
