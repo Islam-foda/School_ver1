@@ -3,7 +3,6 @@ import {  useNavigate } from "react-router-dom";
 const AddOrEditStudent = ({existingData ,onCancel,onSave}) => {
   // const location = useLocation();
   const navigate = useNavigate();
-  
 
   const [student, setStudent] = useState({
     firstName: "",

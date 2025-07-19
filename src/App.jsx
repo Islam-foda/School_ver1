@@ -12,7 +12,8 @@ import BasicDataForm from './assets/assistantComp/students/StudentForm';
 import Staff, { StaffSection } from './assets/assistantComp/staff/Staff';
 import DashboardContent from './assets/component/Dashboard';
 import AddOrEditStudent from './assets/assistantComp/students/studensForms/AddOrEditStudent';
-// import { useNavigate } from 'react-router-dom';
+import InventoryManagement from './assets/assistantComp/Inventory/Inventory';
+import { InventoryProvider } from './assets/assistantComp/Inventory/Context/InventoryContext';
 
 
 function SchoolApp() {
@@ -23,13 +24,12 @@ function SchoolApp() {
   const handleSave = async (studentData) => {
     if (studentData.id) {
       const ref = doc(db, "students", studentData.id);
-      const {  ...rest  } = studentData;
+      const { ...rest } = studentData;
       await updateDoc(ref, rest);
     } else {
       await addDoc(collection(db, "students"), studentData);
     }
     setEditingStudent(null);
-    // Fixed navigation - use navigate instead of window.location
     window.location.href = "/students/list";
   }
 
@@ -48,7 +48,7 @@ function SchoolApp() {
                 path="list"
                 element={<StudentList onEdit={setEditingStudent} />}
               />
-             
+
               <Route
                 path="edit"
                 element={
@@ -66,7 +66,14 @@ function SchoolApp() {
               <Route path=":section/:staffId" element={<StaffSection />} />
             </Route>
             <Route path="/schedule" element={<SchedulePage />} />
-            <Route path="/inventory" element={<ReportsPage />} />
+            <Route
+              path="/inventory"
+              element={
+                <InventoryProvider>
+                  <InventoryManagement />
+                </InventoryProvider>
+              }
+            />
             <Route path="/contact" element={<Contact />} />
             <Route path="/settings" element={<SettingsPage />} />
 
