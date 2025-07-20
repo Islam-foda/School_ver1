@@ -186,18 +186,17 @@ const InventoryManagement = () => {
   return (
     <InventoryProvider>
       <div>
-        <div className="bg-blue-600 p-4 text-white mb-4 flex justify-between items-center">
+        <div className="bg-blue-600 p-6 text-white mb-4 flex justify-between items-center">
           <div>
             <h2 className="text-xl font-semibold">إدارة مخزون المدرسة</h2>
-            <p className="text-sm opacity-90">School Inventory Management</p>
           </div>
           {!showIconMenu && (
             <button
               onClick={handleBackToMenu}
               className="bg-blue-500 hover:bg-blue-400 px-3 py-1 rounded text-sm flex items-center space-x-2 rtl:space-x-reverse"
             >
-              <ArrowLeft size={16} />
               <span>العودة للقائمة الرئيسية</span>
+              <ArrowLeft size={16} />
             </button>
           )}
         </div>

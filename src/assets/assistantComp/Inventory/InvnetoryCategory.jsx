@@ -53,11 +53,11 @@ const InventoryCategory = ({
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center space-x-3 rtl:space-x-reverse">
+        <div className="flex items-center space-x-4 rtl:space-x-reverse">
           <Icon className={`w-8 h-8 ${color.replace('border-', 'text-')}`} />
           <div>
-            <h3 className="text-lg font-bold text-gray-800">{titleAr}</h3>
-            <p className="text-sm text-gray-500 font-arabic">{title}</p>
+            <h3 className="text-lg mr-2 font-bold text-gray-800">{titleAr}</h3>
+            <p className="text-sm mr-2 text-gray-500 font-arabic">{title}</p>
           </div>
         </div>
         <div className="flex items-center space-x-4 rtl:space-x-reverse">

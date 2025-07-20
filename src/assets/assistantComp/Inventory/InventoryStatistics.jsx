@@ -16,12 +16,12 @@ const InventoryStatistics = () => {
   const { inventoryData, totalItems, loading } = useInventory();
 
   const categories = [
-    { key: 'electronics', icon: Monitor, color: 'text-blue-600', bgColor: 'bg-blue-50' },
-    { key: 'labs', icon: FlaskConical, color: 'text-green-600', bgColor: 'bg-green-50' },
-    { key: 'furniture', icon: Armchair, color: 'text-purple-600', bgColor: 'bg-purple-50' },
-    { key: 'documents', icon: FileText, color: 'text-yellow-600', bgColor: 'bg-yellow-50' },
-    { key: 'consumables', icon: TrendingDown, color: 'text-red-600', bgColor: 'bg-red-50' },
-    { key: 'activities', icon: Calendar, color: 'text-indigo-600', bgColor: 'bg-indigo-50' }
+    { key: 'اجهزة الكترونية', icon: Monitor, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+    { key: 'معامل', icon: FlaskConical, color: 'text-green-600', bgColor: 'bg-green-50' },
+    { key: 'أثاث', icon: Armchair, color: 'text-purple-600', bgColor: 'bg-purple-50' },
+    { key: 'أوراق وسجلات', icon: FileText, color: 'text-yellow-600', bgColor: 'bg-yellow-50' },
+    { key: 'استهلاك', icon: TrendingDown, color: 'text-red-600', bgColor: 'bg-red-50' },
+    { key: 'انئطة', icon: Calendar, color: 'text-indigo-600', bgColor: 'bg-indigo-50' }
   ];
 
   const calculateCategoryStats = () => {
@@ -125,8 +125,8 @@ const InventoryStatistics = () => {
                   <div className="flex items-center space-x-3 rtl:space-x-reverse">
                     <IconComponent className={`w-6 h-6 ${category.color}`} />
                     <div>
-                      <h4 className="font-medium text-gray-800 capitalize">{category.key}</h4>
-                      <p className="text-sm text-gray-500">{category.count} عنصر</p>
+                      <h4 className="font-medium text-gray-800 mr-2">{category.key}</h4>
+                      <p className="text-sm text-gray-500 mr-2">{category.count} عنصر</p>
                     </div>
                   </div>
                   <div className="text-right">

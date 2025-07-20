@@ -52,7 +52,7 @@ const InventoryItemCard = ({ item, onEdit, onDelete }) => {
     if (!dateString) return 'غير محدد';
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('ar-EG');
+      return date.toLocaleDateString('en-US');
     } catch {
       return 'غير محدد';
     }

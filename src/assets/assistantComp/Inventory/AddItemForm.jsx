@@ -132,8 +132,8 @@ const AddItemForm = ({ onSave, onCancel }) => {
             <>
               <selectedCategory.icon className={`w-8 h-8 ${selectedCategory.color}`} />
               <div>
-                <h2 className="text-xl font-bold text-gray-800">إضافة عنصر جديد</h2>
-                <p className="text-sm text-gray-500">{selectedCategory.labelEn}</p>
+                <h2 className="text-xl font-bold mr-2 text-gray-800">إضافة عنصر جديد</h2>
+                <p className="text-sm mr-2 text-gray-500">{selectedCategory.label}</p>
               </div>
             </>
           )}
@@ -150,7 +150,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
         {/* Category Selection */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-3">
-            فئة العنصر / Item Category
+           التصنيفات
           </label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {categories.map((category) => {
@@ -182,7 +182,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              اسم العنصر * / Item Name *
+              اسم العنصر * 
             </label>
             <input
               type="text"
@@ -197,7 +197,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              الكمية * / Quantity *
+              الكمية * 
             </label>
             <input
               type="number"
@@ -213,7 +213,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              الموقع / Location
+              الموقع 
             </label>
             <input
               type="text"
@@ -227,7 +227,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              الحالة / Condition
+              الحالة 
             </label>
             <select
               name="condition"
@@ -248,7 +248,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              المورد / Supplier
+              المورد 
             </label>
             <input
               type="text"
@@ -262,7 +262,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              تاريخ الشراء / Purchase Date
+              تاريخ الشراء
             </label>
             <input
               type="date"
@@ -275,7 +275,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              السعر / Price
+              السعر 
             </label>
             <input
               type="number"
@@ -293,7 +293,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
         {/* Description */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            الوصف / Description
+            الوصف 
           </label>
           <textarea
             name="description"
@@ -313,7 +313,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
             className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
             disabled={isSubmitting}
           >
-            إلغاء / Cancel
+            إلغاء 
           </button>
           <button
             type="submit"
@@ -328,7 +328,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
             ) : (
               <>
                 <Save className="w-4 h-4" />
-                <span>حفظ العنصر / Save Item</span>
+                <span className="mr-2">حفظ العنصر</span>
               </>
             )}
           </button>
