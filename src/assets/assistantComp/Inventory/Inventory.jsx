@@ -21,6 +21,8 @@ import {
   Edit
 } from 'lucide-react';
 
+
+
 const InventoryManagement = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('list');

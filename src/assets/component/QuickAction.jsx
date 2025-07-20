@@ -1,4 +1,4 @@
-
+import { useNavigate } from 'react-router-dom';
 import { Users, BookOpen, Calendar, FileText } from 'lucide-react';
 
 const QuickActions = () => {
@@ -8,6 +8,8 @@ const QuickActions = () => {
     { label: 'الجدول الدراسي', icon: Calendar, color: 'bg-purple-600 hover:bg-purple-700' },
     { label: 'التقارير', icon: FileText, color: 'bg-orange-600 hover:bg-orange-700' }
   ];
+
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -19,6 +21,20 @@ const QuickActions = () => {
             <button
               key={index}
               className={`${action.color} text-white p-4 rounded-lg transition-colors flex items-center space-x-3`}
+              onClick={() => {
+                if (action.label === 'إضافة طالب جديد') {
+                  navigate('/students');
+                }
+                if (action.label === 'صفحة المعلم') {
+                  navigate('/staff');
+                }
+                if (action.label === 'الجدول الدراسي') {
+                  navigate('/schedule');
+                }
+                if (action.label === 'التقارير') {
+                  navigate('/inventory');
+                }
+              }}
             >
               <Icon className="w-5 h-5" />
               <span className="font-medium">{action.label}</span>

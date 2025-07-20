@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { db } from './services/firebaseConfig';
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import Header from './assets/component/Header';
-import { CoursesPage, SchedulePage, ReportsPage, Contact, SettingsPage } from './assets/component/Placeholder ';
+import { CoursesPage, SchedulePage, ReportsPage, SettingsPage } from './assets/component/Placeholder ';
+import Contact from './assets/component/Contact';
 import GradeSection from './assets/assistantComp/students/Students'
 import StudentList from './assets/assistantComp/students/studensForms/TempStudent';
 import BasicDataForm from './assets/assistantComp/students/StudentForm';
