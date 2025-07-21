@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
-const AddOrEditStudent = ({existingData ,onCancel,onSave}) => {
-  // const location = useLocation();
+import { useNavigate, useParams } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from '../../../../services/firebaseConfig';
+
+const AddOrEditStudent = ({ onCancel, onSave }) => {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const [student, setStudent] = useState({
     firstName: "",
@@ -15,36 +18,47 @@ const AddOrEditStudent = ({existingData ,onCancel,onSave}) => {
     parentContact: "",
     address: "",
   });
-
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState(null);
 
   useEffect(() => {
-    if (existingData) setStudent(existingData);
-  }, [existingData]);
+    if (id) {
+      setLoading(true);
+      setFetchError(null);
+      getDoc(doc(db, "students", id))
+        .then((docSnap) => {
+          if (docSnap.exists()) {
+            setStudent({ id, ...docSnap.data() });
+          } else {
+            setFetchError("لم يتم العثور على الطالب.");
+          }
+        })
+        .catch(() => setFetchError("حدث خطأ أثناء جلب بيانات الطالب."))
+        .finally(() => setLoading(false));
+    }
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setStudent((prev) => ({ ...prev, [name]: value }));
-    
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Optional basic validation
     const newErrors = {};
     if (!student.firstName) newErrors.firstName = "هذا الحقل مطلوب";
     if (!student.lastName) newErrors.lastName = "هذا الحقل مطلوب";
     if (!student.grade) newErrors.grade = "أدخل الصف الدراسي";
     if (!student.gender) newErrors.gender = "اختر النوع";
-
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
-
     onSave(student);
-    
-     navigate('/students');
+    navigate('/students');
   };
+
+  if (loading) return <div className="text-center p-6">جاري تحميل بيانات الطالب...</div>;
+  if (fetchError) return <div className="text-center p-6 text-red-500">{fetchError}</div>;
 
   return (
     <form
@@ -53,124 +67,114 @@ const AddOrEditStudent = ({existingData ,onCancel,onSave}) => {
       className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md"
     >
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        {existingData ? "تعديل بيانات الطالب" : "إضافة طالب جديد"}
+        {id ? "تعديل بيانات الطالب" : "إضافة طالب جديد"}
       </h2>
-
       <div className="space-y-4">
-         {/* First Name */}
-      <div>
-        <label className="block text-gray-700 mb-1">الاسم الأول:</label>
-        <input 
-          name="firstName" 
-          value={student.firstName} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {errors.firstName && <span className="text-red-500 text-sm">{errors.firstName}</span>}
-      </div>
-
-      {/* Last Name */}
-      <div>
-        <label className="block text-gray-700 mb-1">الاسم الأخير:</label>
-        <input 
-          name="lastName" 
-          value={student.lastName} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {errors.lastName && <span className="text-red-500 text-sm">{errors.lastName}</span>}
-      </div>
-
-      {/* Grade */}
-      <div>
-        <label className="block text-gray-700 mb-1">الصف الدراسي:</label>
-        <input 
-          name="grade" 
-          type="number" 
-          value={student.grade} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {errors.grade && <span className="text-red-500 text-sm">{errors.grade}</span>}
-      </div>
-
-      {/* Class */}
-      <div>
-        <label className="block text-gray-700 mb-1">الفصل:</label>
-        <input 
-          name="class" 
-          value={student.class} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {errors.class && <span className="text-red-500 text-sm">{errors.class}</span>}
-      </div>
-
-      {/* Year */}
-      <div>
-        <label className="block text-gray-700 mb-1">السنة الدراسية:</label>
-        <input 
-          name="year" 
-          type="number" 
-          value={student.year} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      {/* Gender */}
-      <div>
-        <label className="block text-gray-700 mb-1">النوع:</label>
-        <select 
-          name="gender" 
-          value={student.gender} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">اختر النوع</option>
-          <option value="ذكر">ذكر</option>
-          <option value="أنثى">أنثى</option>
-        </select>
-        {errors.gender && <span className="text-red-500 text-sm">{errors.gender}</span>}
-      </div>
-
-      {/* Date of Birth */}
-      <div>
-        <label className="block text-gray-700 mb-1">تاريخ الميلاد:</label>
-        <input 
-          name="dob" 
-          type="date" 
-          value={student.dob} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {errors.dob && <span className="text-red-500 text-sm">{errors.dob}</span>}
-      </div>
-
-      {/* Parent Contact */}
-      <div>
-        <label className="block text-gray-700 mb-1">رقم ولي الأمر:</label>
-        <input 
-          name="parentContact" 
-          value={student.parentContact} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {errors.parentContact && <span className="text-red-500 text-sm">{errors.parentContact}</span>}
-      </div>
-
-      {/* Address */}
-      <div>
-        <label className="block text-gray-700 mb-1">العنوان:</label>
-        <input 
-          name="address" 
-          value={student.address} 
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        {errors.address && <span className="text-red-500 text-sm">{errors.address}</span>}
-      </div>
-
+        {/* First Name */}
+        <div>
+          <label className="block text-gray-700 mb-1">الاسم الأول:</label>
+          <input
+            name="firstName"
+            value={student.firstName}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.firstName && <span className="text-red-500 text-sm">{errors.firstName}</span>}
+        </div>
+        {/* Last Name */}
+        <div>
+          <label className="block text-gray-700 mb-1">الاسم الأخير:</label>
+          <input
+            name="lastName"
+            value={student.lastName}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.lastName && <span className="text-red-500 text-sm">{errors.lastName}</span>}
+        </div>
+        {/* Grade */}
+        <div>
+          <label className="block text-gray-700 mb-1">الصف الدراسي:</label>
+          <input
+            name="grade"
+            type="number"
+            value={student.grade}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.grade && <span className="text-red-500 text-sm">{errors.grade}</span>}
+        </div>
+        {/* Class */}
+        <div>
+          <label className="block text-gray-700 mb-1">الفصل:</label>
+          <input
+            name="class"
+            value={student.class}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.class && <span className="text-red-500 text-sm">{errors.class}</span>}
+        </div>
+        {/* Year */}
+        <div>
+          <label className="block text-gray-700 mb-1">السنة الدراسية:</label>
+          <input
+            name="year"
+            type="number"
+            value={student.year}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        {/* Gender */}
+        <div>
+          <label className="block text-gray-700 mb-1">النوع:</label>
+          <select
+            name="gender"
+            value={student.gender}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">اختر النوع</option>
+            <option value="ذكر">ذكر</option>
+            <option value="أنثى">أنثى</option>
+          </select>
+          {errors.gender && <span className="text-red-500 text-sm">{errors.gender}</span>}
+        </div>
+        {/* Date of Birth */}
+        <div>
+          <label className="block text-gray-700 mb-1">تاريخ الميلاد:</label>
+          <input
+            name="dob"
+            type="date"
+            value={student.dob}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.dob && <span className="text-red-500 text-sm">{errors.dob}</span>}
+        </div>
+        {/* Parent Contact */}
+        <div>
+          <label className="block text-gray-700 mb-1">رقم ولي الأمر:</label>
+          <input
+            name="parentContact"
+            value={student.parentContact}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.parentContact && <span className="text-red-500 text-sm">{errors.parentContact}</span>}
+        </div>
+        {/* Address */}
+        <div>
+          <label className="block text-gray-700 mb-1">العنوان:</label>
+          <input
+            name="address"
+            value={student.address}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {errors.address && <span className="text-red-500 text-sm">{errors.address}</span>}
+        </div>
         <div className="pt-4 flex gap-3">
           <button
             type="submit"

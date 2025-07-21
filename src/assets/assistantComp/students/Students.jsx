@@ -1,9 +1,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Routes, useNavigate, Link, Outlet } from 'react-router-dom';
-import { collection, query, getDocs, where, arrayUnion, writeBatch, doc, updateDoc, addDoc,serverTimestamp   } from 'firebase/firestore';
+import { collection, query, getDocs, where, arrayUnion, writeBatch } from 'firebase/firestore';
 import { db } from '../../../services/firebaseConfig';
-import BasicDataForm from './studensForms/BasicDataForm'
 import ClassListsForm from './studensForms/ClassListsForm'
 import YearWorkForm from './studensForms/YearWorkForm'
 import AttendanceForm from './studensForms/AttendanceForm'
@@ -11,6 +10,7 @@ import ActivitiesForm from './studensForms/ActivitiesForm'
 import PaymentsForm from './studensForms/PaymentsForm'
 import PrintForms from './studensForms/PrintForms'
 // import StudentList from './StudentList';
+import ListStudents from './studensForms/TempStudent';
 import AddOrEditStudent from './studensForms/AddOrEditStudent';
 import {
   User,
@@ -22,24 +22,19 @@ import {
   Printer,
   BarChart3, ArrowUp
 } from 'lucide-react';
-import ListStudents from './studensForms/TempStudent';
 
-// import { useNavigate } from 'react-router-dom';
 
 
 
 
 
 const GradeSection = () => {
-   const navigate = useNavigate();
-  const { grade, studentId } = useParams()
-  const [activeTab, setActiveTab] = useState(studentId ? 'basic' : 'list');
+  const navigate = useNavigate();
+  const { grade, studentId } = useParams();
   const [showIconMenu, setShowIconMenu] = useState(true);
-  const [editingStudent, setEditingStudent] = useState(null);
 
   useEffect(() => {
     if (studentId) {
-      setActiveTab('basic');
       setShowIconMenu(false);
     }
   }, [studentId]);
@@ -51,75 +46,20 @@ const GradeSection = () => {
   };
 
   const handleMenuItemClick = (key) => {
-    setActiveTab(key);
-    setShowIconMenu(false);
-  };
-
-  // FIXED: Handle edit without navigation
-  const handleEdit = (student) => {
-    setEditingStudent(student);
-    setActiveTab('basic'); // Switch to basic tab (add/edit form)
-    setShowIconMenu(false); // Show the form view
-  };
-
-  // FIXED: Handle add new student
-  const handleAddNew = () => {
-    setEditingStudent(null); // Clear editing student for new student
-    setActiveTab('basic'); // Switch to basic tab
-    setShowIconMenu(false); // Show the form view
-  };
-
-  const handleSave = async (data) => {
-   const now = new Date();
-  const readableDate = now.toLocaleString('en-US');
-  const arabicDate = now.toLocaleDateString('ar-EG');
-  
-  try {
-    if (data.id) {
-      // EDITING existing student
-      const ref = doc(db, "students", data.id);
-      const { id: _id, ...rest } = data;
-      
-      const updatedData = {
-        ...rest,
-        updatedDate: serverTimestamp(), // Firestore server timestamp
-        updatedDateReadable: readableDate,
-        updatedDateArabic: arabicDate,
-      };
-      
-      await updateDoc(ref, updatedData);
-      
+    // Route to the appropriate path based on key
+    if (key === 'list') {
+      navigate('/students/list');
+    } else if (key === 'basic') {
+      navigate('/students/edit');
+    } else if (key === 'promote') {
+      handlePromoteStudents();
+      return;
     } else {
-      // ADDING new student
-      const newStudentData = {
-        ...data,
-        createdDate: serverTimestamp(), // Firestore server timestamp
-        createdDateReadable: readableDate,
-        createdDateArabic: arabicDate,
-        updatedDate: serverTimestamp(),
-        updatedDateReadable: readableDate,
-        updatedDateArabic: arabicDate,
-      };
-      
-      await addDoc(collection(db, "students"), newStudentData);
+      // For other keys, just show a placeholder or do nothing
+      alert('هذه الميزة قيد التطوير');
+      return;
     }
-    setEditingStudent(null);
-    setActiveTab('list'); // Go back to student list
-    // No navigation needed - stay in GradeSection
-  }catch (error) {
-    console.error('Error saving student:', error);
-    alert('حدث خطأ أثناء حفظ بيانات الطالب');
-  }
-};
-
-  const handleCancel = () => {
-    setEditingStudent(null);
-    setActiveTab('list'); // Go back to student list
-  };
-
-  const getFormName = (key) => {
-    const item = menuItems.find(item => item.key === key);
-    return item ? item.title : key;
+    setShowIconMenu(false);
   };
 
   const handlePromoteStudents = async () => {
@@ -216,24 +156,7 @@ const GradeSection = () => {
     }
   ];
 
-  const forms = {
-    basic: <AddOrEditStudent
-      existingData={editingStudent}
-      onSave={handleSave}
-      onCancel={handleCancel}
-    />,
-    list: <ListStudents onEdit={handleEdit} onAddNew={handleAddNew} />,
-    classes: <div className="p-4 text-center text-gray-500">قوائم الفصول - قيد التطوير</div>,
-    yearWork: <div className="p-4 text-center text-gray-500">كشوف أعمال السنة - قيد التطوير</div>,
-    attendance: <div className="p-4 text-center text-gray-500">كشوف الغياب - قيد التطوير</div>,
-    activities: <div className="p-4 text-center text-gray-500">كشوف الأنشطة - قيد التطوير</div>,
-    payments: <div className="p-4 text-center text-gray-500">تسجيل سداد المصروفات - قيد التطوير</div>,
-    print: <div className="p-4 text-center text-gray-500">طباعة - قيد التطوير</div>,
-    statistics: <div className="p-4 text-center text-gray-500">احصائية الصف - قيد التطوير</div>
-  };
-
- const handleBackToMenu = () => {
-    setActiveTab(null);
+  const handleBackToMenu = () => {
     setShowIconMenu(true);
     navigate('/students');
   };
@@ -244,20 +167,19 @@ const GradeSection = () => {
         <div>
           <h2 className="text-xl font-semibold">إدارة شئون الطلاب</h2>
         </div>
-       {!showIconMenu && (
+        {!showIconMenu && (
           <button
             onClick={handleBackToMenu}
             className="bg-green-500 hover:bg-green-400 px-3 py-1 rounded text-sm"
           >
             العودة للقائمة الرئيسية
           </button>
-                  )}
-                  </div>
+        )}
+      </div>
       {showIconMenu ? (
         // Icon Menu View
         <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <Outlet />
             {menuItems.map((item) => {
               const IconComponent = item.icon;
               return (
@@ -278,24 +200,9 @@ const GradeSection = () => {
           </div>
         </div>
       ) : (
-        // Form View
+        // Nested Route View
         <div className="p-4">
-          <div className="flex overflow-x-auto mb-4">
-            {Object.keys(forms).map(key => (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`px-4 py-2 mx-1 rounded-t-lg whitespace-nowrap ${activeTab === key ? 'bg-blue-100 text-blue-600' : 'bg-gray-100'
-                  }`}
-              >
-                {getFormName(key)}
-              </button>
-            ))}
-          </div>
-
-          <div className="border rounded-lg p-4">
-            {forms[activeTab]}
-          </div>
+          <Outlet />
         </div>
       )}
     </div>

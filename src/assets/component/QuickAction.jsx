@@ -23,7 +23,7 @@ const QuickActions = () => {
               className={`${action.color} text-white p-4 rounded-lg transition-colors flex items-center space-x-3`}
               onClick={() => {
                 if (action.label === 'إضافة طالب جديد') {
-                  navigate('/students');
+                  navigate('/students/edit');
                 }
                 if (action.label === 'صفحة المعلم') {
                   navigate('/staff');

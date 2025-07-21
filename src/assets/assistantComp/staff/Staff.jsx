@@ -10,14 +10,12 @@ import StaffBasicDataForm from './staffForms/StaffBasicDataForm';
 
 const Staff = () => {
   return (
-    <div className="p-6 space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800">شئون الموظفين</h1>
-      
-      {/* Staff Content Area */}
+  
+     
       <div className="bg-white rounded-lg shadow-md p-4">
         <Outlet /> 
       </div>
-    </div>
+   
   );
 };
 

@@ -11,7 +11,7 @@ const Navigation = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
     { id: 'contact', label: 'التواصل والاعلام', icon: User, path: '/contact' },
     { id: 'settings', label: 'الاعدادات', icon: Settings, path: '/settings' }
   ];
-
+  
   return (
     <>
       {isMobileMenuOpen && (

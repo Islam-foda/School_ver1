@@ -5,21 +5,22 @@ import { useState } from 'react';
 import { db } from './services/firebaseConfig';
 import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import Header from './assets/component/Header';
-import { CoursesPage, SchedulePage, ReportsPage, SettingsPage } from './assets/component/Placeholder ';
+import { SettingsPage } from './assets/component/Placeholder ';
 import Contact from './assets/component/Contact';
+// students
 import GradeSection from './assets/assistantComp/students/Students'
 import StudentList from './assets/assistantComp/students/studensForms/TempStudent';
-import BasicDataForm from './assets/assistantComp/students/StudentForm';
+import AddOrEditStudent from './assets/assistantComp/students/studensForms/AddOrEditStudent';
+//Staff
 import Staff, { StaffSection } from './assets/assistantComp/staff/Staff';
 import DashboardContent from './assets/component/Dashboard';
-import AddOrEditStudent from './assets/assistantComp/students/studensForms/AddOrEditStudent';
 import InventoryManagement from './assets/assistantComp/Inventory/Inventory';
 import { InventoryProvider } from './assets/assistantComp/Inventory/Context/InventoryContext';
+import SchedulePage from './assets/assistantComp/Schedule/SchedulePage';
 
 
 function SchoolApp() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null);
 
 
   const handleSave = async (studentData) => {
@@ -30,7 +31,6 @@ function SchoolApp() {
     } else {
       await addDoc(collection(db, "students"), studentData);
     }
-    setEditingStudent(null);
     window.location.href = "/students/list";
   }
 
@@ -47,14 +47,22 @@ function SchoolApp() {
               {/* <Route index element={<Navigate to="" />} /> */}
               <Route
                 path="list"
-                element={<StudentList onEdit={setEditingStudent} />}
+                element={<StudentList />}
               />
 
+              <Route
+                path="edit/:id"
+                element={
+                  <AddOrEditStudent
+                    onSave={handleSave}
+                    onCancel={() => window.history.back()}
+                  />
+                }
+              />
               <Route
                 path="edit"
                 element={
                   <AddOrEditStudent
-                    existingData={editingStudent}
                     onSave={handleSave}
                     onCancel={() => window.history.back()}
                   />
@@ -76,6 +84,7 @@ function SchoolApp() {
               }
             />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/settings" element={<SettingsPage />} />
 
             {/* Optional: Redirect for unmatched paths */}
