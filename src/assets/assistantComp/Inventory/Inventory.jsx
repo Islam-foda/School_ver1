@@ -6,6 +6,7 @@ import AddItemForm from './AddItemForm';
 import EditItemForm from './EditItemForm';
 import InventoryStatistics from './InventoryStatistics';
 import InventorySettings from './InventorySettings';
+import PermissionGuard from '../../../components/PermissionGuard';
 import {
   Monitor,
   FlaskConical,
@@ -184,6 +185,7 @@ const InventoryManagement = () => {
   };
 
   return (
+    <PermissionGuard permission="view-inventory">
     <InventoryProvider>
       <div>
         <div className="bg-blue-600 p-6 text-white mb-4 flex justify-between items-center">
@@ -250,6 +252,7 @@ const InventoryManagement = () => {
         )}
       </div>
     </InventoryProvider>
+    </PermissionGuard>
   );
 };
 

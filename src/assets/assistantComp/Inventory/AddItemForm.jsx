@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useInventory } from './Context/useInventory';
+import PermissionGuard from '../../../components/PermissionGuard';
 import {
   Monitor,
   FlaskConical,
@@ -125,6 +126,8 @@ const AddItemForm = ({ onSave, onCancel }) => {
   const selectedCategory = categories.find(cat => cat.value === formData.category);
 
   return (
+    <PermissionGuard permission="add-inventory">
+
     <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -335,6 +338,7 @@ const AddItemForm = ({ onSave, onCancel }) => {
         </div>
       </form>
     </div>
+    </PermissionGuard>
   );
 };
 

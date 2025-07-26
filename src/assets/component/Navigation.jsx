@@ -1,31 +1,34 @@
 import { NavLink } from 'react-router-dom';
 import { Users, BookOpen, Calendar, FileText, Settings, BarChart3, User, X } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 const Navigation = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
+  const { hasPermission } = useAuth();
+
   const navItems = [
-    { id: 'dashboard', label: 'القائمة الرئيسية', icon: BarChart3, path: '/' },
-    { id: 'students', label: 'شئون الطلاب', icon: Users, path: '/students' },
-    { id: 'staff', label: 'شئون العاملين', icon: BookOpen, path: '/staff' },
-    { id: 'schedule', label: 'الجدول المدرسي', icon: Calendar, path: '/schedule' },
-    { id: 'inventory', label: 'العهد والمخازن', icon: FileText, path: '/inventory' },
-    { id: 'contact', label: 'التواصل والاعلام', icon: User, path: '/contact' },
-    { id: 'settings', label: 'الاعدادات', icon: Settings, path: '/settings' }
+    { id: 'dashboard', label: 'القائمة الرئيسية', icon: BarChart3, path: '/', permission: null },
+    { id: 'students', label: 'شئون الطلاب', icon: Users, path: '/students', permission: 'view-students' },
+    { id: 'staff', label: 'شئون العاملين', icon: BookOpen, path: '/staff', permission: 'view-staff' },
+    { id: 'schedule', label: 'الجدول المدرسي', icon: Calendar, path: '/schedule', permission: null },
+    { id: 'inventory', label: 'العهد والمخازن', icon: FileText, path: '/inventory', permission: 'view-inventory' },
+    { id: 'contact', label: 'التواصل والاعلام', icon: User, path: '/contact', permission: null },
+    { id: 'settings', label: 'الاعدادات', icon: Settings, path: '/settings', permission: null }
   ];
-  
+
   return (
     <>
       {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden ltr:text-left rtl:text-right" 
-          onClick={() => setIsMobileMenuOpen(false)} 
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden ltr:text-left rtl:text-right"
+          onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
-      
+
       <div className={`fixed right-0 top-0 h-full w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="p-6 border-b border-blue-700">
           <div className="flex items-center justify-between">
-            <NavLink 
-              to="/" 
+            <NavLink
+              to="/"
               className="flex items-center space-x-3"
               onClick={() => setIsMobileMenuOpen(false)}
             >
@@ -37,7 +40,7 @@ const Navigation = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
                 <p className="text-blue-200 text-sm">نظام إدارة المدارس</p>
               </div>
             </NavLink>
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="lg:hidden text-white hover:text-blue-200"
             >
@@ -45,18 +48,23 @@ const Navigation = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             </button>
           </div>
         </div>
-        
+
         <nav className="mt-6 ltr:ml-4 rtl:mr-4">
           {navItems.map((item) => {
             const Icon = item.icon;
+
+            // Check if user has permission for this item
+            if (item.permission && !hasPermission(item.permission)) {
+              return null;
+            }
+
             return (
               <NavLink
                 key={item.id}
                 to={item.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={({ isActive }) => 
-                  `w-full flex items-center space-x-3 px-6 py-3 text-left hover:bg-blue-700 transition-colors ${
-                    isActive ? 'bg-blue-700 border-r-4 border-white' : ''
+                className={({ isActive }) =>
+                  `w-full flex items-center space-x-3 px-6 py-3 text-left hover:bg-blue-700 transition-colors ${isActive ? 'bg-blue-700 border-r-4 border-white' : ''
                   }`
                 }
               >

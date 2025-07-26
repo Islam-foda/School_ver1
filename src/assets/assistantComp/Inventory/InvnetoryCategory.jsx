@@ -4,7 +4,7 @@ import { useInventory } from './Context/useInventory';
 import AddItemForm from './AddItemForm';
 import InventoryItemCard from './InventoryItemCard';
 import { Loader2, AlertCircle } from "lucide-react";
-
+import PermissionGuard from '../../../components/PermissionGuard';
 
 
 const InventoryCategory = ({
@@ -47,6 +47,7 @@ const InventoryCategory = ({
   };
 
   return (
+    <PermissionGuard permission="view-inventory">
     <div className={`bg-white rounded-lg shadow-md border-l-4 ${color} p-6 hover:shadow-lg transition-shadow`}>
       {/* Category Header */}
       <div
@@ -138,6 +139,7 @@ const InventoryCategory = ({
         </div>
       )}
     </div>
+    </PermissionGuard>
   );
 };
 

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Trash2, Edit, User, IdCard, Phone, Mail } from 'lucide-react';
+import PermissionGuard from '../../../components/PermissionGuard';
 
 const StaffList = ({ staff, loading, onEditStaff, onDeleteStaff }) => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [deleting, setDeleting] = useState(null);
-
   if (loading) return <div className="p-4 text-center">جاري تحميل بيانات الموظفين...</div>;
   if (!staff?.length) return <div className="p-4 text-center text-gray-500">لا يوجد موظفين مسجلين</div>;
 
@@ -12,11 +12,11 @@ const StaffList = ({ staff, loading, onEditStaff, onDeleteStaff }) => {
     setDeleteConfirm({ id: staffId, name: staffName });
   };
 
-   
+
 
   const handleConfirmDelete = async () => {
     if (!deleteConfirm) return;
-    
+
     setDeleting(deleteConfirm.id);
     try {
       await onDeleteStaff(deleteConfirm.id);
@@ -37,7 +37,7 @@ const StaffList = ({ staff, loading, onEditStaff, onDeleteStaff }) => {
       {staff.map(member => {
         const staffData = member.basicData || member;
         const isDeleting = deleting === member.id;
-        
+
         return (
           <div key={member.id} className="p-4 border rounded-lg bg-white shadow-sm">
             <div className="flex justify-between items-start">
@@ -48,7 +48,7 @@ const StaffList = ({ staff, loading, onEditStaff, onDeleteStaff }) => {
                     {staffData.name || 'بدون اسم'}
                   </h3>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm text-gray-600">
                   {staffData.staffId && (
                     <div className="flex items-center gap-2">
@@ -88,29 +88,34 @@ const StaffList = ({ staff, loading, onEditStaff, onDeleteStaff }) => {
                   )}
                 </div>
               </div>
-              
+
               <div className="flex gap-2 ml-4">
-                <button
-                  onClick={() => onEditStaff(member.id)}
-                  disabled={isDeleting}
-                  className="px-3 py-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 text-sm whitespace-nowrap flex items-center gap-1 disabled:opacity-50"
-                >
-                  <Edit size={16} />
-                  تعديل
-                </button>
-                
-                <button
-                  onClick={() => handleDeleteClick(member.id, staffData.name)}
-                  disabled={isDeleting}
-                  className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 text-sm whitespace-nowrap flex items-center gap-1 disabled:opacity-50"
-                >
-                  {isDeleting ? (
-                    <span className="animate-spin">⏳</span>
-                  ) : (
-                    <Trash2 size={16} />
-                  )}
-                  {isDeleting ? 'جاري الحذف...' : 'حذف'}
-                </button>
+                <div className="flex gap-2">
+                  <PermissionGuard permission="edit-staff">
+                    <button
+                      onClick={() => onEditStaff(member.id)}
+                      disabled={isDeleting}
+                      className="px-3 py-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 text-sm whitespace-nowrap flex items-center gap-1 disabled:opacity-50"
+                    >
+                      <Edit size={16} />
+                      تعديل
+                    </button>
+                  </PermissionGuard>
+                  <PermissionGuard permission="delete-staff">
+                    <button
+                      onClick={() => handleDeleteClick(member.id, staffData.name)}
+                      disabled={isDeleting}
+                      className="px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 text-sm whitespace-nowrap flex items-center gap-1 disabled:opacity-50"
+                    >
+                      {isDeleting ? (
+                        <span className="animate-spin">⏳</span>
+                      ) : (
+                        <Trash2 size={16} />
+                      )}
+                      {isDeleting ? 'جاري الحذف...' : 'حذف'}
+                    </button>
+                  </PermissionGuard>
+                </div>
               </div>
             </div>
           </div>
@@ -129,7 +134,7 @@ const StaffList = ({ staff, loading, onEditStaff, onDeleteStaff }) => {
               <br />
               <span className="text-red-600 font-medium">هذا الإجراء لا يمكن التراجع عنه.</span>
             </p>
-            
+
             <div className="flex gap-3 justify-end">
               <button
                 onClick={handleCancelDelete}

@@ -2,6 +2,8 @@ import { db } from '../../../../services/firebaseConfig';
 import { useState, useEffect } from "react";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../../../context/AuthContext';
+import PermissionGuard from '../../../../components/PermissionGuard';
 
 
 const ListStudents = () => {
@@ -14,7 +16,7 @@ const ListStudents = () => {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { hasPermission } = useAuth();
   const fetchStudents = async () => {
     setLoading(true);
     try {
@@ -120,18 +122,22 @@ const ListStudents = () => {
                   <p className="text-sm text-gray-500">الصف: {stu.grade} | الفصل: {stu.class}</p>
                 </div>
                 <div className="flex gap-2">
+                  <PermissionGuard permission="edit-students">
                   <button
                     onClick={() => handleEdit(stu)}
                     className="text-blue-600 hover:underline"
                   >
                     ✏️ تعديل
                   </button>
+                  </PermissionGuard>
+                  <PermissionGuard permission="delete-students">
                   <button
                     onClick={() => handleDelete(stu.id)}
                     className="text-red-600 hover:underline"
                   >
                     🗑️ حذف
                   </button>
+                  </PermissionGuard>
                 </div>
               </div>
             ))

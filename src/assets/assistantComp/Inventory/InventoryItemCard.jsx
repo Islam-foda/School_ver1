@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Clock
 } from 'lucide-react';
+import PermissionGuard from '../../../components/PermissionGuard';
 
 const InventoryItemCard = ({ item, onEdit, onDelete }) => {
   const [showActions, setShowActions] = useState(false);
@@ -81,20 +82,24 @@ const InventoryItemCard = ({ item, onEdit, onDelete }) => {
 
         {/* Actions */}
         <div className={`flex space-x-2 rtl:space-x-reverse transition-opacity ${showActions ? 'opacity-100' : 'opacity-0'}`}>
-          <button
-            onClick={() => onEdit(item)}
-            className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-            title="تعديل"
-          >
-            <Edit size={16} />
-          </button>
-          <button
-            onClick={() => onDelete(item.id)}
-            className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
-            title="حذف"
-          >
-            <Trash2 size={16} />
-          </button>
+          <PermissionGuard permission="edit-inventory">
+            <button
+              onClick={() => onEdit(item)}
+              className="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+              title="تعديل"
+            >
+              <Edit size={16} />
+            </button>
+          </PermissionGuard>
+          <PermissionGuard permission="delete-inventory">
+            <button
+              onClick={() => onDelete(item.id)}
+              className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+              title="حذف"
+            >
+              <Trash2 size={16} />
+            </button>
+          </PermissionGuard>
         </div>
       </div>
 

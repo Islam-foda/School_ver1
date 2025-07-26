@@ -5,7 +5,7 @@ import { db } from '../../../services/firebaseConfig'; // Adjust import path as 
 import StaffList from './StaffList';
 import StaffBasicDataForm from './staffForms/StaffBasicDataForm';
  import { User, ClipboardList, TrendingUp, GraduationCap, FileText, Calendar, Printer, Users, Edit, Trash2, IdCard, Phone, Mail } from 'lucide-react';
-
+import { useAuth } from '../../../context/AuthContext';
 
 
 const Staff = () => {
@@ -28,7 +28,7 @@ const StaffSection = () => {
   const [loading, setLoading] = useState(false);
   const [showIconMenu, setShowIconMenu] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Add refresh trigger
-
+  const { hasPermission } = useAuth();
   const keyMapping = {
     'بيانات اساسية': 'basic',
     'قائمة الموظفين': 'list',
@@ -290,11 +290,12 @@ const StaffSection = () => {
         // Icon Menu View
         <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {menuItems.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <button
-                  key={item.key}
+            {hasPermission('view-staff') &&
+              menuItems.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <button
+                    key={item.key}
                   onClick={() => handleMenuItemClick(item.key)}
                   className={`${item.color} p-6 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105 hover:shadow-lg`}
                 >
@@ -307,6 +308,7 @@ const StaffSection = () => {
                 </button>
               );
             })}
+            
           </div>
         </div>
       ) : (
